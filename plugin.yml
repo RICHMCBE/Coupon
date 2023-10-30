@@ -1,0 +1,6 @@
+name: Coupon
+main: DOHWI\Coupon\Coupon
+src-namespace-prefix: DOHWI\Coupon
+author: dohwi
+api: 5.0.0
+version: 1.0.0
