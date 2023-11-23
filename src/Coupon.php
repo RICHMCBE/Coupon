@@ -35,20 +35,34 @@ final class Coupon extends PluginBase
         }
     }
 
-    protected function onDisable(): void
-    {
+    protected function onDisable(): void {
         $data = [];
-        foreach(self::$data as $code => $couponData) {
+        foreach (self::$data as $code => $couponData) {
             $data[$code] = [
                 "MONEY" => $couponData->money,
                 "COUNT" => $couponData->count,
-                "TIME" => $couponData->count,
+                "TIME" => $couponData->time,
                 "ITEMS" => ItemUtil::convertToString($couponData->items),
                 "PLAYERS" => $couponData->players
             ];
         }
+
+        $data = $this->convertArrayToUtf8($data);
+
         self::$config->setAll($data);
         self::$config->save();
+    }
+
+    private function convertArrayToUtf8(array $data): array {
+        foreach ($data as &$value) {
+            if (is_array($value)) {
+                $value = $this->convertArrayToUtf8($value);
+            } elseif (is_string($value)) {
+                $value = mb_convert_encoding($value, 'UTF-8', 'auto');
+            }
+        }
+
+        return $data;
     }
 
     public static function getCoupon(string $code): CouponData|null
